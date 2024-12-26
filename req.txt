@@ -1,4 +1,0 @@
-django
-black
-pillow
-djangorestframework
