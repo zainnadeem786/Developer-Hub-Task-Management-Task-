@@ -1,0 +1,148 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+  }
+
+  h1, p {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: #4e54c8;
+    transition: color 0.3s;
+  }
+
+  a:hover {
+    color: #333;
+  }
+
+  /* Card Container */
+  .card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .card h1 {
+    font-size: 2rem;
+    color: #4e54c8;
+    margin-bottom: 1rem;
+    text-align:center;
+  }
+
+  .card p {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 2rem;
+  }
+
+  /* Input Styles */
+  .input-container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .input-container label {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  .input-container input {
+    width: 90%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    font-size: 1rem;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .input-container input:focus {
+    border-color: #4e54c8;
+    box-shadow: 0px 0px 10px rgba(78, 84, 200, 0.5);
+  }
+
+  .input-container input.error {
+    border-color: #e74c3c;
+    animation: vibrate 0.3s ease-in-out;
+  }
+
+  @keyframes vibrate {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    50% {
+      transform: translateX(4px);
+    }
+    75% {
+      transform: translateX(-4px);
+    }
+  }
+
+  .input-container .error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Button Styles */
+  .button {
+    display: inline-block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0px 5px 15px rgba(78, 84, 200, 0.3);
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+
+  .button:hover {
+    background: linear-gradient(90deg, #8f94fb, #4e54c8);
+    transform: translateY(-3px);
+    box-shadow: 0px 10px 20px rgba(78, 84, 200, 0.5);
+  }
+
+  .button:active {
+    transform: translateY(0);
+    box-shadow: 0px 5px 15px rgba(78, 84, 200, 0.3);
+  }
+
+  /* Additional Links */
+  .card .links {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+  }
+
+  .card .links a {
+    font-weight: bold;
+    color: #4e54c8;
+  }
+
+  .card .links a:hover {
+    color: #333;
+  }

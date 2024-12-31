@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Add Task{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-700 p-12 rounded-xl shadow-xl text-white">
+    <h2 class="text-5xl font-semibold mb-8 text-center">Create a New Task</h2>
+    <form method="post" class="space-y-8 bg-white p-10 rounded-2xl shadow-xl text-gray-800">
+        {% csrf_token %}
+        
+        <!-- Task Title -->
+        <div class="form-group">
+            <label for="id_title" class="block text-xl font-medium text-gray-800 mb-3">Task Title</label>
+            <input 
+                type="text" 
+                name="title" 
+                id="id_title" 
+                placeholder="Enter Your Task Name" 
+                class="w-full px-6 py-4 text-lg text-gray-700 bg-gray-100 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 hover:bg-gray-200"
+                value="{{ form.title.value|default:'' }}" 
+                required>
+        </div>
+
+        <!-- Task Description -->
+        <div class="form-group">
+            <label for="id_description" class="block text-xl font-medium text-gray-800 mb-3">Task Description</label>
+            <textarea 
+                name="description" 
+                id="id_description" 
+                placeholder="Describe your task" 
+                class="w-full px-6 py-4 text-lg text-gray-700 bg-gray-100 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 hover:bg-gray-200" 
+                rows="5" 
+                required>{{ form.description.value|default:'' }}</textarea>
+        </div>
+
+        <!-- Task Status -->
+        <div class="form-group">
+            <label for="id_status" class="block text-xl font-medium text-gray-800 mb-3">Task Status</label>
+            <select name="status" id="id_status" class="w-full px-6 py-4 text-lg text-gray-700 bg-gray-100 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 hover:bg-gray-200">
+                <option value="PENDING" {% if form.status.value == 'PENDING' %}selected{% endif %}>Pending</option>
+                <option value="IN_PROGRESS" {% if form.status.value == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
+                <option value="COMPLETED" {% if form.status.value == 'COMPLETED' %}selected{% endif %}>Completed</option>
+            </select>
+        </div>
+
+        <!-- Due Date -->
+        <div class="form-group">
+            <label for="id_due_date" class="block text-xl font-medium text-gray-800 mb-3">Due Date</label>
+            <input 
+                type="date" 
+                name="due_date" 
+                id="id_due_date" 
+                class="w-full px-6 py-4 text-lg text-gray-700 bg-gray-100 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 hover:bg-gray-200" 
+                value="{{ form.due_date.value|default:'' }}">
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center">
+            <button type="submit" class="w-full py-4 bg-blue-600 text-white text-lg rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-105">
+                Save Task
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

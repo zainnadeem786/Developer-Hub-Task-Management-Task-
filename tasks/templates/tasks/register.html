@@ -1,0 +1,84 @@
+{% load static %}
+{% block content %}
+
+<head>
+  <!-- Other head content -->
+  <link href="{% static 'css/form.css' %}" rel="stylesheet">
+</head>
+
+  <div class="card">
+    <h1>Register</h1>
+    <p>Create a new account to get started with Task Management.</p>
+
+    <form method="POST" action="{% url 'register' %}">
+      {% csrf_token %}
+
+      <!-- Username Input -->
+      <div class="input-container">
+        <label for="id_username">Username</label>
+        <input 
+          type="text" 
+          id="id_username" 
+          name="username" 
+          placeholder="Enter your username" 
+          class="{% if form.username.errors %}error{% endif %}" 
+          required>
+        {% if form.username.errors %}
+        <p class="error-message">Invalid username</p>
+        {% endif %}
+      </div>
+
+      <!-- Email Input -->
+      <div class="input-container">
+        <label for="id_email">Email</label>
+        <input 
+          type="email" 
+          id="id_email" 
+          name="email" 
+          placeholder="Enter your email" 
+          class="{% if form.email.errors %}error{% endif %}" 
+          required>
+        {% if form.email.errors %}
+        <p class="error-message">Invalid email address</p>
+        {% endif %}
+      </div>
+
+      <!-- Password Input -->
+      <div class="input-container">
+        <label for="id_password">Password</label>
+        <input 
+          type="password" 
+          id="id_password" 
+          name="password" 
+          placeholder="Enter your password" 
+          class="{% if form.password.errors %}error{% endif %}" 
+          required>
+        {% if form.password.errors %}
+        <p class="error-message">Password is required</p>
+        {% endif %}
+      </div>
+
+      <!-- Confirm Password Input -->
+      <div class="input-container">
+        <label for="id_password2">Confirm Password</label>
+        <input 
+          type="password" 
+          id="id_password2" 
+          name="password2" 
+          placeholder="Confirm your password" 
+          class="{% if form.password2.errors %}error{% endif %}" 
+          required>
+        {% if form.password2.errors %}
+        <p class="error-message">Passwords do not match</p>
+        {% endif %}
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="button">Register</button>
+    </form>
+
+    <div class="links">
+      <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+  </div>
+{% endblock %}
