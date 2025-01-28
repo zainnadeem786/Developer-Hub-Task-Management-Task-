@@ -4,6 +4,7 @@ from .models import Task
 
 # Serializer for Task model
 class TaskSerializer(serializers.ModelSerializer):
+    shared_with = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all())
     class Meta:
         model = Task
         fields = '__all__'

@@ -41,6 +41,15 @@
             <p class="text-lg text-gray-600 mb-2">{{ task.description }}</p>
             <p class="text-sm text-black">Status: <span class="font-medium">{{ task.get_status_display }}</span></p> <!-- Status text color changed to black -->
             <p class="text-sm text-gray-500">Due Date: <span class="font-medium text-teal-600">{{ task.due_date }}</span></p>
+
+            <!-- Shared Users Section -->
+            <p class="text-sm text-gray-500">Shared with:
+                <span class="shared-with">
+                    {% for user in task.shared_with.all %}
+                        <span class="text-teal-600">{{ user.username }}</span>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
+            </p>
             <div class="flex space-x-4 mt-4">
                 <button onclick="editTask({{ task.id }})" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg transition duration-300 transform hover:scale-105">
                     Edit
@@ -48,6 +57,13 @@
                 <button onclick="deleteTask({{ task.id }})" class="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg transition duration-300 transform hover:scale-105">
                     Delete
                 </button>
+
+                <button onclick="shareTask({{ task.id }})" class="bg-blue-500 text-white py-2 px-4 rounded-lg">
+                    Share Task
+                </button>
+                
+                
+                
             </div>
 
             <!-- Update Form (hidden initially) -->
@@ -86,5 +102,21 @@
         </button>
     </div>
 </div>
+<!-- Notification Pop-Up -->
+<div id="notification-popup" class="fixed inset-0 bg-gray-700 bg-opacity-50 z-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-md max-w-sm mx-auto">
+        <h2 class="text-xl font-semibold">Notifications</h2>
+        <div id="notification-list" class="mt-4 space-y-2">
+            <!-- Notifications will appear here -->
+        </div>
+        <button onclick="closeNotifications()" class="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg">Close</button>
+    </div>
+</div>
+
+<!-- Button to Open Notifications -->
+{% comment %} <button onclick="openNotifications()" class="bg-green-500 text-white px-6 py-3 rounded-lg mt-4 hover:bg-green-600">
+    View Notifications
+</button> {% endcomment %}
+
 
 {% endblock %}
