@@ -14,6 +14,8 @@ class Task(models.Model):
     due_date = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')  # Owner of the task
     shared_with = models.ManyToManyField(User, related_name='shared_tasks', blank=True)  # Shared users
+    created_at = models.DateTimeField(auto_now_add=True)  # Add this field
+    task_file = models.FileField(upload_to='tasks/', null=True, blank=True)
 
     def __str__(self):
         return self.title

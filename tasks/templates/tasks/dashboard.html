@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-6">Admin Analytics Dashboard</h1>
+
+    <!-- Task Summary Cards -->
+    <div class="grid grid-cols-4 gap-6 text-center">
+        <div class="p-6 bg-blue-500 text-white rounded-lg shadow-md">
+            <h2 class="text-xl font-bold">Total Tasks</h2>
+            <p id="total-tasks" class="text-3xl font-semibold">0</p>
+        </div>
+        <div class="p-6 bg-green-500 text-white rounded-lg shadow-md">
+            <h2 class="text-xl font-bold">Completed Tasks</h2>
+            <p id="completed-tasks" class="text-3xl font-semibold">0</p>
+        </div>
+        <div class="p-6 bg-yellow-500 text-white rounded-lg shadow-md">
+            <h2 class="text-xl font-bold">Pending Tasks</h2>
+            <p id="pending-tasks" class="text-3xl font-semibold">0</p>
+        </div>
+        <div class="p-6 bg-orange-500 text-white rounded-lg shadow-md">
+            <h2 class="text-xl font-bold">In Progress</h2>
+            <p id="in-progress-tasks" class="text-3xl font-semibold">0</p>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-2 gap-8 mt-8">
+        <!-- Pie Chart for Task Status -->
+        <div class="p-6 bg-white shadow-lg rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-center">Task Status Breakdown</h2>
+            <canvas id="statusChart"></canvas>
+        </div>
+
+        <!-- Line Chart for Weekly Trends -->
+        <div class="p-6 bg-white shadow-lg rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-center">Weekly Task Trends</h2>
+            <p id="weeklyTrendsMessage" class="text-center text-lg font-semibold text-gray-500">Data Processing...</p>
+            <canvas id="weeklyTrendsChart"></canvas>
+        </div>
+    </div>
+
+    
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("/analytics/overview/")
+    .then(response => response.json())
+    .then(data => {
+        // Updating task count
+        document.getElementById("total-tasks").innerText = data.total_tasks;
+        document.getElementById("completed-tasks").innerText = data.completed_tasks;
+        document.getElementById("pending-tasks").innerText = data.pending_tasks;
+        document.getElementById("in-progress-tasks").innerText = data.in_progress_tasks;
+
+        // Pie Chart - Task Status Breakdown
+        const statusLabels = data.status_breakdown.map(item => item.status);
+        const statusCounts = data.status_breakdown.map(item => item.count);
+        const ctx1 = document.getElementById("statusChart").getContext("2d");
+
+        new Chart(ctx1, {
+            type: "pie",
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    data: statusCounts,
+                    backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
+                }]
+            }
+        });
+
+        // Line Chart - Weekly Trends
+        const weeklyLabels = data.weekly_trends.map(item => "Week " + item.week);
+        const weeklyCounts = data.weekly_trends.map(item => item.count);
+        const ctx2 = document.getElementById("weeklyTrendsChart").getContext("2d");
+
+        if (weeklyCounts.length > 0) {
+            document.getElementById("weeklyTrendsMessage").style.display = "none"; // Hide "Data Processing..." message
+            new Chart(ctx2, {
+                type: "line",
+                data: {
+                    labels: weeklyLabels,
+                    datasets: [{
+                        label: "Tasks Completed",
+                        data: weeklyCounts,
+                        borderColor: "#4A90E2",
+                        fill: false,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        } else {
+            document.getElementById("weeklyTrendsMessage").innerText = "No tasks for the selected week yet.";
+        }
+    })
+    .catch(error => console.error("Error fetching analytics:", error));
+});
+</script>
+
+{% endblock %}

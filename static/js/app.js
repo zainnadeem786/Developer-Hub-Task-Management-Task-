@@ -315,3 +315,51 @@ async function fetchNotifications() {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(";").shift();
   }
+
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    const fetchData = async (url) => {
+        const response = await fetch(url);
+        return response.json();
+    };
+
+    // Fetch overview stats
+    const overviewData = await fetchData("/analytics/overview/");
+    document.getElementById("totalTasks").textContent = overviewData.total_tasks;
+    document.getElementById("completedTasks").textContent = overviewData.completed_tasks;
+    document.getElementById("pendingTasks").textContent = overviewData.pending_tasks;
+
+    // Render Status Pie Chart
+    const ctx1 = document.getElementById("statusChart").getContext("2d");
+    new Chart(ctx1, {
+        type: "pie",
+        data: {
+            labels: ["Completed", "Pending", "In Progress"],
+            datasets: [{
+                data: [overviewData.completed_tasks, overviewData.pending_tasks, overviewData.in_progress_tasks],
+                backgroundColor: ["#22c55e", "#facc15", "#3b82f6"],
+            }]
+        }
+    });
+
+    // Fetch trends data
+    const trendsData = await fetchData("/analytics/trends/");
+    const labels = trendsData.trends.map(item => `Week ${item.period}`);
+    const counts = trendsData.trends.map(item => item.count);
+
+    // Render Line Chart
+    const ctx2 = document.getElementById("trendsChart").getContext("2d");
+    new Chart(ctx2, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Tasks Created",
+                data: counts,
+                borderColor: "#3b82f6",
+                borderWidth: 2,
+                fill: false,
+            }]
+        }
+    });
+});

@@ -3,6 +3,8 @@ from .views import TaskListCreateView, TaskRetrieveUpdateDeleteView
 from . import views
 from .views import task_list, task_create, task_progress
 from . import views
+from .views import analytics_overview, analytics_trends
+
 urlpatterns = [
     path('', views.task_list, name='task-list'),
     path('tasks/create/', views.task_create, name='task-create'),
@@ -15,4 +17,6 @@ urlpatterns = [
     path('share-task/<int:task_id>/', views.share_task, name='share-task'),
     path("notifications/", views.get_notifications, name="get_notifications"),
     path("notifications/<int:notification_id>/mark-as-read/", views.mark_notification_as_read, name="mark_as_read"),
+    path("analytics/trends/", analytics_trends, name="analytics-trends"),
+    path('analytics/overview/', analytics_overview, name='analytics-overview'),
 ]

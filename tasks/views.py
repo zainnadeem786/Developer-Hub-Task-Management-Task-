@@ -16,10 +16,45 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Task, Notification
-from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count, F
+from django.db.models.functions import ExtractWeek, ExtractMonth
+from django.contrib.auth.decorators import user_passes_test
+from django.db.models.functions import TruncWeek
 
 
 
+
+
+@user_passes_test(lambda u: u.is_staff)  # Only admins can access
+def dashboard(request):
+    # Get total task counts (including tasks from all users)
+    total_tasks = Task.objects.count()
+    completed_tasks = Task.objects.filter(status='Completed').count()
+    pending_tasks = Task.objects.filter(status='Pending').count()
+    in_progress_tasks = Task.objects.filter(status='In Progress').count()
+
+    # Get status breakdown (including tasks from all users)
+    status_breakdown = Task.objects.values('status').annotate(count=Count('id'))
+
+    # Get weekly trends based on due_date (adjust as needed)
+    weekly_trends = Task.objects.annotate(week=TruncWeek('due_date')).values('week').annotate(count=Count('id')).order_by('week')
+
+    # Get task counts per user (including tasks from all users)
+    user_task_stats = Task.objects.values('user__username').annotate(
+        completed=Count('id', filter=Task.objects.filter(status='Completed')),
+        pending=Count('id', filter=Task.objects.filter(status='Pending')),
+        in_progress=Count('id', filter=Task.objects.filter(status='In Progress'))
+    )
+
+    return render(request, 'tasks/dashboard.html', {
+        'total_tasks': total_tasks,
+        'completed_tasks': completed_tasks,
+        'pending_tasks': pending_tasks,
+        'in_progress_tasks': in_progress_tasks,
+        'status_breakdown': status_breakdown,
+        'weekly_trends': weekly_trends,
+        'user_task_stats': user_task_stats  # Pass user-specific task data
+    })
 
 # Task Views
 class TaskListCreateView(LoginRequiredMixin, generics.ListCreateAPIView):
@@ -253,3 +288,57 @@ def mark_notification_as_read(request, notification_id):
         except Notification.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Notification not found"})
     return JsonResponse({"status": "error", "message": "Invalid request method"})
+
+
+
+def analytics_overview(request):
+    data = {
+        "total_tasks": Task.objects.count(),
+        "completed_tasks": Task.objects.filter(status="Completed").count(),
+        "pending_tasks": Task.objects.filter(status="Pending").count(),
+        "in_progress_tasks": Task.objects.filter(status="In Progress").count(),
+    }
+    return JsonResponse(data)
+
+
+
+
+def analytics_trends(request):
+    interval = request.GET.get("interval", "weekly")  # ?interval=monthly or weekly
+
+    if interval == "monthly":
+        trends = Task.objects.annotate(period=ExtractMonth("due_date")).values("period").annotate(count=Count("id"))
+    else:
+        trends = Task.objects.annotate(period=ExtractWeek("due_date")).values("period").annotate(count=Count("id"))
+
+    return JsonResponse({"trends": list(trends)})
+
+
+
+# Restrict access to staff (admin) users only
+def analytics_overview(request):
+    # Fetch task counts with case-insensitive filtering
+    total_tasks = Task.objects.count()
+    completed_tasks = Task.objects.filter(status__iexact="COMPLETED").count()
+    pending_tasks = Task.objects.filter(status__iexact="PENDING").count()
+    in_progress_tasks = Task.objects.filter(status__iexact="IN_PROGRESS").count()
+
+    # Status breakdown (ensures consistent case format)
+    status_breakdown = Task.objects.values("status").annotate(count=Count("id"))
+
+    # Format status names correctly
+    formatted_status_breakdown = [
+        {"status": entry["status"].upper(), "count": entry["count"]}
+        for entry in status_breakdown
+    ]
+
+    # Response data
+    data = {
+        "total_tasks": total_tasks,
+        "completed_tasks": completed_tasks,
+        "pending_tasks": pending_tasks,
+        "in_progress_tasks": in_progress_tasks,
+        "status_breakdown": formatted_status_breakdown,
+    }
+
+    return JsonResponse(data)

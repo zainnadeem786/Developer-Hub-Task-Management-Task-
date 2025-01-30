@@ -68,21 +68,29 @@
 
             <!-- Update Form (hidden initially) -->
             <div id="update-form-{{ task.id }}" class="hidden mt-6">
-                <form onsubmit="updateTask(event, {{ task.id }})">
+                <form onsubmit="updateTask(event, {{ task.id }})" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="text" name="title" value="{{ task.title }}" required class="w-full p-4 mb-4 text-lg text-gray-800 bg-gray-100 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Task Title">
+                    
                     <textarea name="description" class="w-full p-4 mb-4 text-lg text-gray-800 bg-gray-100 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Task Description" required>{{ task.description }}</textarea>
+                    
                     <select name="status" class="w-full p-4 mb-4 text-lg bg-gray-100 text-black border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="PENDING" {% if task.status == 'PENDING' %}selected{% endif %}>Pending</option>
                         <option value="IN_PROGRESS" {% if task.status == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
                         <option value="COMPLETED" {% if task.status == 'COMPLETED' %}selected{% endif %}>Completed</option>
                     </select>
+            
+                    <!-- File/Image Upload (Optional) -->
+                    <input type="file" name="task_file" accept="image/*, .pdf, .docx, .txt" class="w-full p-4 mb-4 text-lg bg-gray-100 text-black border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    
                     <input type="date" name="due_date" value="{{ task.due_date }}" class="w-full p-4 mb-4 text-lg text-gray-800 bg-gray-100 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    
                     <button type="submit" class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-300 transform hover:scale-105">
                         Save Changes
                     </button>
                 </form>
             </div>
+            
         </li>
         {% empty %}
         <p class="text-lg font-semibold text-black-500">No tasks available.</p>

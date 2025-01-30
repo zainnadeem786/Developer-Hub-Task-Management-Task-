@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from tasks.views import dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('tasks.urls')),  # Include tasks app URLs
     # path('api/', include('api.urls')),  # API routes (if separate)
+    path('dashboard/', dashboard, name='dashboard'),
 ]
 
