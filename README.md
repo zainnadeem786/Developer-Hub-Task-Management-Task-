@@ -138,3 +138,10 @@ A modern Task Management System built with **Django**, designed to help users or
  ## Contribution
 
   Feel free to fork this repository and create pull requests for any feature improvements or bug fixes. Let's build a better task management system together!
+
+  
+This version includes:
+- **Task Sharing and Notifications**: Details about the endpoints and notifications when tasks are updated or shared.
+- **Admin Dashboard**: Admins have access to an analytics dashboard, which includes task statistics and graphical trends.
+- **Graphical Analytics**: Tasks trends and other analytics are visualized using a graphical interface.
+
